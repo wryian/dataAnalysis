@@ -1,0 +1,38 @@
+
+import numpy as np
+import scipy
+import matplotlib.pyplot as plt
+
+
+from scipy.optimize import curve_fit
+from scipy.fftpack import fft,fftfreq
+
+
+
+
+
+def independentVectorOfFunct(inputFunct):
+    return(inputFunct[:, 0])
+
+def dependentVectorOfFunct(inputFunct):
+    return(inputFunct[:, 1])
+    
+def fitDatasetWithPolynomial(inputFunct, polyOrder):
+    xCoords = independentVectorOfFunct(inputFunct)
+    yVals = dependentVectorOfFunct(inputFunct)
+    parametersOfFit = np.polyfit(xCoords, yVals, polyOrder)
+    return(np.array([xCoords, np.polyval(parametersOfFit, xCoords)]).T)
+
+def detrendDatasetWithPolynomial(inputFunct, detrendOrder):
+    xCoords = independentVectorOfFunct(inputFunct)
+    yVals = dependentVectorOfFunct(inputFunct)
+    yFitVals = dependentVectorOfFunct(fitDatasetWithPolynomial(inputFunct, detrendOrder))
+    return(np.array([xCoords,yVals - yFitVals]).T)
+
+def rescaleDataset(inputFunct,scaleFactor):
+    xCoords = independentVectorOfFunct(inputFunct)
+    yValsScaled = scaleFactor*dependentVectorOfFunct(inputFunct)
+    return(np.array([xCoords,yValsScaled]).T)
+
+def plotAfunction(inputFunction):
+    return plt.plot(independentVectorOfFunct(inputFunction),dependentVectorOfFunct(inputFunction))
